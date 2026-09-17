@@ -696,9 +696,10 @@ function read(){
 function dd(d){return'<b'+(d<0?' class="neg"':'')+'>'+(d>0?"+":"")+d.toFixed(2)+'</b>';}
 
 function drawGrade(g){
-  el("c1").style.display=g>=1?"":"none";
-  el("c2").style.display=g>=2?"":"none";
-  el("c3").style.display=g>=3?"":"none";
+  /* cracks belong to the standing shell - at D5 there is no shell left */
+  el("c1").style.display=(g>=1&&g<5)?"":"none";
+  el("c2").style.display=(g>=2&&g<5)?"":"none";
+  el("c3").style.display=(g>=3&&g<5)?"":"none";
   el("d4").style.display=g===4?"":"none";
   el("d5").style.display=g===5?"":"none";
   el("g-shell").style.display=g===5?"none":"";
