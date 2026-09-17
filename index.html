@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Rapid seismic vulnerability triage for the Tashkent
+ building stock. EMS-98 screening with a retrofit priority portfolio.">
+<meta name="author" content="Ravshanbek Karomatov">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2312304a'/%3E%3Cpath d='M3 18h4l2-5 3 12 3-18 3 20 3-13 2 6 2-2h4' fill='none' stroke='%23e8a33d' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Zilzila Screen</title>
+<style>
+:root{color-scheme:light dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=DM+Mono:wght@400;500&family=Saira+Condensed:wght@600;700&display=swap">
+<style>
+:root{
+  --desk:#dce0e1; --sheet:#fafbfb; --tint:#f0f3f3;
+  --ink:#101617; --ink-2:#4d5a5c; --ink-3:#7b8a8c;
+  --rule:#0f1516; --hair:#c2cacb; --grid:#eff3f3;
+  --mark:#b42d21; --mark-soft:#f2e0dd;
+  --d1:#2f7d5e; --d2:#5f8f3a; --d3:#a8781a; --d4:#c8541f; --d5:#a3241a;
+  --d1r:47,125,94; --d2r:95,143,58; --d3r:168,120,26; --d4r:200,84,31; --d5r:163,36,26;
+  --sel:#0f1516; --sel-ink:#fafbfb;
+  --f-d:"Saira Condensed",Impact,"Arial Narrow",sans-serif;
+  --f-b:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --f-m:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --desk:#071824; --sheet:#12304a; --tint:#173a58;
+    --ink:#eaf2f8; --ink-2:#a9c6d9; --ink-3:#7ba0ba;
+    --rule:#dce9f2; --hair:#3f6a8a; --grid:#163650;
+    --mark:#e8a33d; --mark-soft:#2a4459;
+    --d1:#5fc49a; --d2:#9ed166; --d3:#e3bb52; --d4:#f08d52; --d5:#f26b5e;
+    --d1r:95,196,154; --d2r:158,209,102; --d3r:227,187,82; --d4r:240,141,82; --d5r:242,107,94;
+    --sel:#eaf2f8; --sel-ink:#12304a;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#071824; --sheet:#12304a; --tint:#173a58;
+  --ink:#eaf2f8; --ink-2:#a9c6d9; --ink-3:#7ba0ba;
+  --rule:#dce9f2; --hair:#3f6a8a; --grid:#163650;
+  --mark:#e8a33d; --mark-soft:#2a4459;
+  --d1:#5fc49a; --d2:#9ed166; --d3:#e3bb52; --d4:#f08d52; --d5:#f26b5e;
+  --d1r:95,196,154; --d2r:158,209,102; --d3r:227,187,82; --d4r:240,141,82; --d5r:242,107,94;
+  --sel:#eaf2f8; --sel-ink:#12304a;
+}
+*{box-sizing:border-box}
+body{background:var(--desk);color:var(--ink);font-family:var(--f-b);
+  font-size:14.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.desk{padding-inline:16px;padding-block:22px 40px}
+
+/* ===== the sheet ===== */
+.sheet{max-width:1160px;margin:0 auto;background:var(--sheet);
+  border:1.5px solid var(--rule);position:relative;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;background-position:-1px -1px}
+.inner{border:1px solid var(--hair);margin:7px}
+
+h1,h2,h3{margin:0;font-family:var(--f-d);text-transform:uppercase;
+  letter-spacing:.02em;text-wrap:balance;font-weight:700}
+.mono{font-family:var(--f-m)}
+
+/* ===== masthead ===== */
+.mast{display:flex;flex-wrap:wrap;gap:20px;align-items:center;
+  justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--hair)}
+.ttl h1{font-size:34px;line-height:.92;letter-spacing:.005em}
+.ttl p{margin:5px 0 0;font-size:13px;color:var(--ink-2);max-width:42ch}
+.trace{flex:1 1 210px;min-width:150px;max-width:330px;height:46px;color:var(--mark)}
+.stamp{font-family:var(--f-m);font-size:10px;line-height:1.85;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--ink-3);text-align:right;white-space:nowrap}
+.stamp b{color:var(--ink);font-weight:500}
+
+/* ===== zones ===== */
+.zone-hd{display:flex;align-items:center;gap:11px;padding:9px 20px;
+  border-bottom:1px solid var(--hair);background:var(--tint)}
+.znum{font-family:var(--f-m);font-size:10px;font-weight:500;color:var(--sel-ink);
+  background:var(--sel);padding:2px 7px;letter-spacing:.06em;flex:none}
+.zone-hd h2{font-size:15px;letter-spacing:.07em}
+.zone-hd .sub{margin-left:auto;font-family:var(--f-m);font-size:10px;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);text-align:right}
+
+.split,.zone-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.04fr)}
+@media (max-width:900px){.split,.zone-bar{grid-template-columns:1fr}}
+.zone-bar{border-bottom:1px solid var(--hair);background:var(--tint)}
+.zone-bar>div{display:flex;align-items:center;gap:11px;padding:9px 20px;min-width:0}
+.zone-bar>div+div{border-left:1px solid var(--hair)}
+@media (max-width:900px){
+  .zone-bar>div+div{border-left:0;border-top:1px solid var(--hair)}
+}
+.col{padding:18px 20px}
+.col+.col{border-left:1px solid var(--hair)}
+@media (max-width:900px){.col+.col{border-left:0;border-top:1px solid var(--hair)}}
+
+/* ===== notes ===== */
+.notes{padding:13px 20px;border-bottom:1px solid var(--hair);
+  display:flex;gap:13px;align-items:baseline}
+.notes .lbl{font-family:var(--f-m);font-size:10px;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--mark);flex:none;padding-top:1px}
+.notes p{margin:0;font-size:13px;color:var(--ink-2)}
+.notes b{color:var(--ink);font-weight:600}
+
+/* ===== paper form ===== */
+.grp{margin-bottom:19px}
+.grp:last-child{margin-bottom:0}
+.grp>.cap{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--ink-3);display:block;
+  border-bottom:1px solid var(--hair);padding-bottom:5px;margin-bottom:11px}
+.fld{margin-bottom:13px}
+.fld:last-child{margin-bottom:0}
+.fld label{display:block;font-family:var(--f-m);font-size:9.5px;
+  text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin-bottom:2px}
+.fld input,.fld select{width:100%;font-family:var(--f-b);font-size:14.5px;
+  color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid var(--hair);
+  border-radius:0;padding:4px 0 5px;appearance:none;transition:border-color .12s}
+.fld select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),
+  linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);
+  background-position:calc(100% - 9px) 56%,calc(100% - 5px) 56%;
+  background-size:4px 4px,4px 4px;background-repeat:no-repeat;padding-right:20px}
+.fld input:hover,.fld select:hover{border-bottom-color:var(--ink-3)}
+.fld input:focus,.fld select:focus{outline:0;border-bottom-color:var(--mark)}
+.fld input:focus-visible,.fld select:focus-visible{outline:2px solid var(--mark);
+  outline-offset:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media (max-width:430px){.two{grid-template-columns:1fr}}
+.tip{font-size:11.5px;color:var(--ink-3);margin:4px 0 0;line-height:1.45}
+
+/* observed-defects checklist */
+.list{border-top:1px solid var(--hair)}
+.tick{display:flex;gap:11px;align-items:flex-start;padding:8px 2px;
+  border-bottom:1px solid var(--hair);cursor:pointer}
+.tick input{position:absolute;opacity:0;width:0;height:0}
+.box{width:14px;height:14px;flex:none;border:1.5px solid var(--ink-2);margin-top:2px;
+  position:relative;transition:background .1s}
+.tick input:checked+.box{background:var(--mark);border-color:var(--mark)}
+.tick input:checked+.box::after{content:"";position:absolute;left:3.5px;top:.5px;
+  width:4px;height:8px;border:solid var(--sheet);border-width:0 1.8px 1.8px 0;
+  transform:rotate(42deg)}
+.tick input:focus-visible+.box{outline:2px solid var(--mark);outline-offset:2px}
+.tick .tx{font-size:13.5px;line-height:1.35}
+.tick .tx em{display:block;font-style:normal;font-size:11.5px;color:var(--ink-3);margin-top:1px}
+.tick .dv{margin-left:auto;font-family:var(--f-m);font-size:11.5px;color:var(--ink-3);
+  flex:none;padding-top:2px;font-variant-numeric:tabular-nums}
+
+/* ===== assessment ===== */
+.elev{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:480px){.elev{grid-template-columns:1fr}}
+.dwg{width:172px;max-width:100%}
+.dwg svg{width:100%;height:auto;display:block}
+.dwg .cap{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--ink-3);text-align:center;margin-top:6px;
+  border-top:1px solid var(--hair);padding-top:5px}
+
+.verdict .gr{font-family:var(--f-d);font-size:44px;line-height:.85;letter-spacing:-.01em}
+.verdict .nm{font-family:var(--f-d);font-size:19px;letter-spacing:.06em;margin-top:2px}
+.verdict .pr{display:inline-block;font-family:var(--f-m);font-size:10px;
+  text-transform:uppercase;letter-spacing:.08em;border:1.5px solid currentColor;
+  padding:2px 8px;margin-top:9px}
+.verdict .ds{font-size:13px;color:var(--ink-2);margin:11px 0 0;line-height:1.5}
+
+/* measured rule */
+.gauge{margin-top:20px}
+.gauge .hd{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--ink-3);margin-bottom:9px}
+.gauge .hd b{color:var(--ink);font-weight:500;font-size:11px}
+.gauge svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* derivation */
+.deriv{margin-top:20px;border-top:1px solid var(--hair);padding-top:12px}
+.deriv .cap{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--ink-3);display:block;margin-bottom:7px}
+.dl{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;
+  padding:3px 0;color:var(--ink-2)}
+.dl b{font-family:var(--f-m);font-size:12px;font-weight:400;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.dl.sum{border-top:1.5px solid var(--rule);margin-top:5px;padding-top:7px;
+  color:var(--ink);font-weight:600}
+.dl.sum b{font-weight:500}
+.neg{color:var(--mark)}
+
+.acts{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;align-items:center}
+button{font-family:var(--f-m);font-size:11px;text-transform:uppercase;
+  letter-spacing:.09em;cursor:pointer;border-radius:0;padding:9px 16px;
+  border:1.5px solid var(--rule);transition:opacity .12s}
+button:hover{opacity:.78}
+button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.b1{background:var(--sel);color:var(--sel-ink)}
+.b2{background:transparent;color:var(--ink)}
+.stat{font-family:var(--f-m);font-size:10px;color:var(--ink-3);
+  letter-spacing:.05em;margin-left:auto;text-align:right}
+
+/* ===== schedule ===== */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:680px}
+th{font-family:var(--f-m);font-size:9.5px;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--ink-3);font-weight:400;text-align:left;padding:8px 20px;
+  border-bottom:1.5px solid var(--rule);white-space:nowrap}
+th:first-child,td:first-child{padding-left:20px}
+th:last-child,td:last-child{padding-right:20px}
+td{padding:9px 20px;border-bottom:1px solid var(--hair);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+.rf{font-weight:600}
+.sb{font-size:11.5px;color:var(--ink-3)}
+.num{font-family:var(--f-m);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.gchip{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-m);
+  font-size:11px;white-space:nowrap}
+.gchip i{width:9px;height:9px;flex:none}
+.exr td{opacity:.6}
+.extag{font-family:var(--f-m);font-size:8.5px;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--ink-3);border:1px solid var(--hair);
+  padding:0 4px;margin-left:6px;vertical-align:middle}
+.rm{background:none;border:0;padding:2px 5px;color:var(--ink-3);font-size:14px;
+  line-height:1;letter-spacing:0}
+.rm:hover{color:var(--mark);opacity:1}
+
+/* distribution strip */
+.strip{display:flex;height:22px;border-bottom:1px solid var(--hair)}
+.strip i{display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-m);font-size:9.5px;color:var(--sheet);transition:flex-grow .3s}
+.strip .none{flex:1;background:var(--tint)}
+
+/* ===== title block ===== */
+.tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  border-top:1.5px solid var(--rule)}
+@media (max-width:760px){.tb{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tb>div{padding:9px 14px;border-right:1px solid var(--hair);min-width:0}
+.tb>div:last-child{border-right:0}
+@media (max-width:760px){
+  .tb>div:nth-child(2n){border-right:0}
+  .tb>div:nth-child(-n+2){border-bottom:1px solid var(--hair)}
+}
+.tb .k{font-family:var(--f-m);font-size:8.5px;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--ink-3);display:block;margin-bottom:3px}
+.tb .v{font-size:12px;color:var(--ink);line-height:1.4}
+.tb .v b{font-family:var(--f-m);font-weight:500}
+
+
+/* ===== view switch ===== */
+.vsw{display:flex;border:1.5px solid var(--rule);flex:none}
+.vsw button{border:0;border-radius:0;padding:7px 15px;background:transparent;
+  color:var(--ink);font-family:var(--f-m);font-size:10px;letter-spacing:.09em}
+.vsw button+button{border-left:1.5px solid var(--rule)}
+.vsw button[aria-pressed="true"]{background:var(--sel);color:var(--sel-ink)}
+
+/* ===== headline strip ===== */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  border-bottom:1px solid var(--hair)}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.kpis{grid-template-columns:1fr}}
+.kpi{padding:15px 20px;border-right:1px solid var(--hair);min-width:0}
+.kpi:last-child{border-right:0}
+@media (max-width:860px){
+  .kpi{border-bottom:1px solid var(--hair)}
+  .kpi:nth-child(2n){border-right:0}
+}
+.kpi .k{display:block;font-family:var(--f-m);font-size:9px;text-transform:uppercase;
+  letter-spacing:.11em;color:var(--ink-3);margin-bottom:6px}
+.kpi .n{font-family:var(--f-d);font-size:33px;line-height:.9;letter-spacing:-.01em;
+  font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .n small{font-size:15px;font-family:var(--f-m);font-weight:400;
+  letter-spacing:0;margin-left:3px;color:var(--ink-2)}
+.kpi .s{display:block;font-size:11.5px;color:var(--ink-3);margin-top:5px;line-height:1.35}
+
+/* ===== profile bar ===== */
+.prof{display:flex;height:40px;gap:2px;margin-bottom:9px}
+.prof i{display:flex;align-items:center;justify-content:center;font-family:var(--f-m);
+  font-size:11px;color:var(--sheet);min-width:0;overflow:hidden}
+.legend{display:flex;flex-wrap:wrap;gap:13px;font-family:var(--f-m);font-size:10px;
+  color:var(--ink-3);letter-spacing:.04em}
+.legend span{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.legend i{width:9px;height:9px;flex:none}
+
+/* ===== district ranking ===== */
+.rank{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  gap:5px 11px;align-items:center}
+.rank .dn{font-size:12.5px;white-space:nowrap}
+.rank .db{display:flex;height:13px;gap:2px;min-width:0}
+.rank .db i{min-width:2px}
+.rank .dv{font-family:var(--f-m);font-size:11.5px;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+/* ===== stock matrix ===== */
+.mx{border-collapse:collapse;width:100%;min-width:430px}
+.mx th{padding:6px 8px;border-bottom:1.5px solid var(--rule);text-align:center}
+.mx th:first-child{text-align:left}
+.mx td{padding:0;border:0}
+.mx .rl{font-size:12.5px;padding:6px 10px 6px 0;white-space:nowrap;
+  border-bottom:1px solid var(--hair)}
+.cell{height:34px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-m);font-size:12px;font-variant-numeric:tabular-nums;
+  border-bottom:1px solid var(--sheet);border-right:1px solid var(--sheet)}
+.cell.zero{color:var(--ink-3);opacity:.3}
+
+.tb-foot{display:grid;grid-template-columns:1.25fr 1.9fr .55fr .55fr;
+  border-top:1px solid var(--hair)}
+@media (max-width:760px){.tb-foot{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tb-foot>div{padding:9px 14px;border-right:1px solid var(--hair);min-width:0}
+.tb-foot>div:last-child{border-right:0}
+@media (max-width:760px){
+  .tb-foot>div:nth-child(2n){border-right:0}
+  .tb-foot>div:nth-child(-n+2){border-bottom:1px solid var(--hair)}
+}
+.tb-foot .k{font-family:var(--f-m);font-size:8.5px;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--ink-3);display:block;margin-bottom:3px}
+.tb-foot .v{font-size:12px;color:var(--ink);line-height:1.4}
+.tb-foot .v b{font-family:var(--f-m);font-weight:500}
+.tb-foot .name{font-family:var(--f-d);font-size:16px;text-transform:uppercase;
+  letter-spacing:.04em;font-weight:700;line-height:1.1;display:block}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(12px);
+  background:var(--sel);color:var(--sel-ink);font-family:var(--f-m);font-size:11px;
+  text-transform:uppercase;letter-spacing:.07em;padding:9px 18px;opacity:0;
+  pointer-events:none;transition:opacity .18s,transform .18s;z-index:9}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="desk">
+<div class="sheet"><div class="inner">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="mast">
+    <div class="ttl">
+      <h1>Zilzila Screen</h1>
+      <p>Rapid seismic vulnerability triage for the Tashkent building stock</p>
+    </div>
+    <svg class="trace" viewBox="0 0 330 46" fill="none" aria-hidden="true"
+         preserveAspectRatio="none">
+      <path d="M0 23h38l4-3 5 7 4-11 6 19 5-24 5 31 6-36 5 40 6-30 5 21 5-13 4 8 5-5 4 3
+               6-6 5 9 4-4 5 2h6l4-5 5 8 4-11 6 14 5-9 4 5 5-3 6 4 4-6 5 8 4-4 5 2 6-3
+               4 5 5-4 4 2h97" stroke="currentColor" stroke-width="1.3"
+            stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+    <div class="vsw" role="group" aria-label="View">
+      <button id="v-port" aria-pressed="true">Portfolio</button>
+      <button id="v-surv" aria-pressed="false">Survey</button>
+    </div>
+    <div class="stamp">
+      Tashkent &middot; Uzbekistan<br>
+      Scenario <b>MSK-64 int. VIII</b><br>
+      Basis <b>EMS-98 classes A&ndash;F</b>
+    </div>
+  </header>
+
+  <div class="notes">
+    <span class="lbl">Note 1</span>
+    <p><b>Screening triage, not a structural assessment.</b> This ranks buildings so a
+    limited survey budget reaches the right ones first. Priority&nbsp;1 means commission
+    an engineering assessment &mdash; it is not an instruction to evacuate.</p>
+  </div>
+
+  <div class="notes" id="note2">
+    <span class="lbl">Note 2</span>
+    <p><b id="n2-h">Demonstration dataset.</b> <span id="n2-b"></span></p>
+  </div>
+
+  <!-- ================= PORTFOLIO VIEW ================= -->
+  <div id="view-port">
+    <div class="zone-hd"><span class="znum">01</span><h2>Programme summary</h2>
+      <span class="sub" id="ps-sub">&mdash;</span></div>
+    <div class="kpis" id="kpis"></div>
+
+    <div class="zone-bar">
+      <div><span class="znum">02</span><h2>Risk profile</h2></div>
+      <div><span class="znum">03</span><h2>Exposure by district</h2>
+        <span class="sub">residents</span></div>
+    </div>
+    <div class="split">
+      <div class="col">
+        <div class="prof" id="prof"></div>
+        <div class="legend" id="prof-key"></div>
+        <p class="tip" style="margin-top:13px">Worst credible EMS-98 damage grade at
+          intensity VIII. Screening is deliberately conservative: EMS-98 gives a
+          distribution of outcomes per vulnerability class, and this reports the
+          severe tail of that distribution, not its centre.</p>
+        <div class="deriv" style="margin-top:15px">
+          <span class="cap">Residents by grade</span>
+          <div id="res-lines"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="rank" id="rank"></div>
+      </div>
+    </div>
+
+    <div class="zone-hd"><span class="znum">04</span><h2>Stock matrix</h2>
+      <span class="sub">count &middot; shaded by mean grade</span></div>
+    <div class="col" style="overflow-x:auto">
+      <table class="mx" id="mx"></table>
+    </div>
+
+    <div class="zone-hd"><span class="znum">05</span><h2>Retrofit queue</h2>
+      <span class="sub" id="q-sub">worst first</span></div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>Rank</th><th>Ref</th><th>District</th><th>Structure</th><th>Built</th>
+          <th>Res.</th><th>Class</th><th>Grade</th><th>Pri</th>
+        </tr></thead>
+        <tbody id="q-rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= SURVEY VIEW ================= -->
+  <div id="view-surv" hidden>
+  <div class="zone-bar">
+    <div><span class="znum">01</span><h2>Survey record</h2></div>
+    <div><span class="znum">02</span><h2>Assessment</h2>
+      <span class="sub">at MSK-64 VIII</span></div>
+  </div>
+
+  <div class="split">
+    <!-- ============ 01 SURVEY ============ -->
+    <div class="col">
+      <div class="grp">
+        <span class="cap">A &middot; Identification</span>
+        <div class="two">
+          <div class="fld"><label for="f-ref">Reference</label>
+            <input type="text" id="f-ref" value="TSH-0412"></div>
+          <div class="fld"><label for="f-addr">Mahalla / street</label>
+            <input type="text" id="f-addr" value="Chilanzar, block 14"></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label for="f-res">Residents</label>
+            <input type="text" id="f-res" inputmode="numeric" value="112"></div>
+          <div class="fld"><label for="f-dist">District</label>
+            <input type="text" id="f-dist" value="Chilanzar"></div>
+        </div>
+      </div>
+
+      <div class="grp">
+        <span class="cap">B &middot; Structure</span>
+        <div class="fld"><label for="f-type">Structural type</label>
+          <select id="f-type"></select></div>
+        <div class="two">
+          <div class="fld"><label for="f-age">Period of construction</label>
+            <select id="f-age"></select></div>
+          <div class="fld"><label for="f-st">Storeys</label>
+            <select id="f-st"></select></div>
+        </div>
+        <p class="tip">Seismic provisions followed the 1966 earthquake and were
+          revised in 1981.</p>
+      </div>
+
+      <div class="grp">
+        <span class="cap">C &middot; Site</span>
+        <div class="fld"><label for="f-soil">Ground type &mdash; Eurocode 8</label>
+          <select id="f-soil"></select></div>
+        <p class="tip">Soft ground amplifies shaking. Much of Tashkent sits on loess
+          and alluvium, typically C or D.</p>
+      </div>
+
+      <div class="grp">
+        <span class="cap">D &middot; Defects observed on site</span>
+        <div class="list" id="f-flags"></div>
+      </div>
+    </div>
+
+    <!-- ============ 02 ASSESSMENT ============ -->
+    <div class="col">
+      <div class="elev">
+        <figure class="dwg">
+          <svg viewBox="0 0 200 208" fill="none" aria-labelledby="dwg-t">
+            <title id="dwg-t">Expected damage state elevation</title>
+            <!-- ground -->
+            <path d="M8 186h184" stroke="var(--rule)" stroke-width="1.6"/>
+            <path d="M12 192l6-6M28 192l6-6M44 192l6-6M60 192l6-6M76 192l6-6M92 192l6-6
+                     M108 192l6-6M124 192l6-6M140 192l6-6M156 192l6-6M172 192l6-6"
+                  stroke="var(--hair)" stroke-width="1"/>
+            <!-- intact shell (grades 1-4) -->
+            <g id="g-shell" stroke="var(--rule)" stroke-width="1.6" stroke-linejoin="round">
+              <path d="M44 74v112M156 74v112M44 186h112"/>
+              <path d="M36 74l64-30 64 30"/>
+              <path d="M44 74h112"/>
+              <path d="M44 102h112M44 130h112M44 158h112" stroke-width="1" stroke="var(--hair)"/>
+              <g stroke-width="1.2">
+                <rect x="56" y="82" width="20" height="14"/><rect x="90" y="82" width="20" height="14"/>
+                <rect x="124" y="82" width="20" height="14"/>
+                <rect x="56" y="110" width="20" height="14"/><rect x="90" y="110" width="20" height="14"/>
+                <rect x="124" y="110" width="20" height="14"/>
+                <rect x="56" y="138" width="20" height="14"/><rect x="90" y="138" width="20" height="14"/>
+                <rect x="124" y="138" width="20" height="14"/>
+                <rect x="56" y="166" width="20" height="20"/><rect x="124" y="166" width="20" height="20"/>
+                <path d="M90 186v-20h20v20"/>
+              </g>
+            </g>
+            <!-- cumulative cracking -->
+            <g id="c1" stroke="var(--mark)" stroke-width="1.3" stroke-linecap="round">
+              <path d="M76 96l4 6-3 5 4 5"/>
+            </g>
+            <g id="c2" stroke="var(--mark)" stroke-width="1.5" stroke-linecap="round">
+              <path d="M110 96l5 7-4 6 6 7-3 5"/><path d="M56 124l-6 6 4 6-5 6"/>
+            </g>
+            <g id="c3" stroke="var(--mark)" stroke-width="1.9" stroke-linecap="round">
+              <path d="M144 96l7 9-5 8 8 9"/><path d="M76 152l-8 8 6 8-7 9 5 9"/>
+              <path d="M124 124l-8 9 7 8-6 9"/>
+              <path d="M100 44l-4 10 5 8"/>
+              <path d="M62 60l-5 5M74 54l-5 5M138 54l5 5M150 60l5 5"/>
+            </g>
+            <!-- grade 4: corner failure -->
+            <g id="d4">
+              <path d="M156 74l-30 14 30 34z" fill="var(--sheet)" stroke="none"/>
+              <path d="M156 74l-30 14 30 34" stroke="var(--rule)" stroke-width="1.6"
+                    stroke-linejoin="round"/>
+              <path d="M132 186h44l-6-8-12 4-9-7-11 6z" fill="var(--mark-soft)"
+                    stroke="var(--mark)" stroke-width="1.2" stroke-linejoin="round"/>
+              <path d="M44 130c22 7 46 7 68 1" stroke="var(--mark)" stroke-width="1.6"/>
+            </g>
+            <!-- grade 5: collapse -->
+            <g id="d5">
+              <path d="M44 186V104l10 8v74zM156 186v-58l-9 10v48z"
+                    fill="var(--sheet)" stroke="var(--rule)" stroke-width="1.6"
+                    stroke-linejoin="round"/>
+              <path d="M50 186l8-22 14 9 10-16 16 12 13-10 12 14 16-8 9 21z"
+                    fill="var(--mark-soft)" stroke="var(--mark)" stroke-width="1.4"
+                    stroke-linejoin="round"/>
+              <path d="M70 176l10-5M96 180l12-7M124 174l11 6" stroke="var(--mark)"
+                    stroke-width="1.1" stroke-linecap="round"/>
+            </g>
+          </svg>
+          <figcaption class="cap" id="dwg-cap">Damage state</figcaption>
+        </figure>
+
+        <div class="verdict">
+          <div class="gr" id="r-gr">D3</div>
+          <div class="nm" id="r-nm">Moderate</div>
+          <div class="pr" id="r-pr">Priority 3</div>
+          <p class="ds" id="r-ds">&mdash;</p>
+        </div>
+      </div>
+
+      <!-- measured vulnerability rule -->
+      <div class="gauge">
+        <div class="hd"><span>Effective vulnerability class</span><b id="r-cls">&mdash;</b></div>
+        <svg viewBox="0 0 320 52" fill="none" aria-hidden="true" preserveAspectRatio="none">
+          <path d="M4 34h312" stroke="var(--rule)" stroke-width="1.5"/>
+          <g stroke="var(--rule)" stroke-width="1.5">
+            <path d="M4 34v-9M82 34v-9M160 34v-9M238 34v-9M316 34v-9"/>
+          </g>
+          <g stroke="var(--hair)" stroke-width="1">
+            <path d="M23.5 34v-5M43 34v-5M62.5 34v-5M101.5 34v-5M121 34v-5M140.5 34v-5
+                     M179.5 34v-5M199 34v-5M218.5 34v-5M257.5 34v-5M277 34v-5M296.5 34v-5"/>
+          </g>
+          <g fill="var(--ink-3)" font-family="DM Mono, monospace" font-size="11"
+             text-anchor="middle">
+            <text x="4" y="49">A</text><text x="82" y="49">B</text>
+            <text x="160" y="49">C</text><text x="238" y="49">D</text>
+            <text x="316" y="49">E</text>
+          </g>
+          <g id="r-ptr" style="transform:translateX(4px)">
+            <path d="M0 34l-6-11h12z" fill="var(--mark)"/>
+            <path d="M0 34V8" stroke="var(--mark)" stroke-width="1.5"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="deriv">
+        <span class="cap">Derivation</span>
+        <div id="r-lines"></div>
+      </div>
+
+      <div class="acts">
+        <button class="b1" id="b-save">Add to schedule</button>
+        <button class="b2" id="b-reset">Clear</button>
+        <span class="stat" id="r-stat"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 03 SCHEDULE ============ -->
+  <div class="zone-hd">
+    <span class="znum">03</span><h2>Survey schedule</h2>
+    <span class="sub" id="p-tally">&mdash;</span>
+  </div>
+  <div class="strip" id="p-strip"></div>
+  <div class="tw">
+    <table>
+      <thead><tr>
+        <th>Ref</th><th>Structure</th><th>Built</th><th>Gnd</th>
+        <th>Class</th><th>Grade</th><th>Damage state</th><th>Pri</th><th></th>
+      </tr></thead>
+      <tbody id="p-rows"></tbody>
+    </table>
+  </div>
+
+  </div>
+
+  <!-- ============ TITLE BLOCK ============ -->
+  <div class="tb">
+    <div><span class="k">Scenario</span><span class="v">Repeat of the 1966 Tashkent
+      earthquake &mdash; <b>M 5.2</b> at 3&ndash;8 km beneath the city,
+      <b>MSK-64 VIII</b></span></div>
+    <div><span class="k">Hazard basis</span><span class="v">300 km catalogue zone:
+      <b>b = 1.29</b>, <b>M &ge; 6.0</b> every <b>13 yr</b>, 475-yr magnitude
+      <b>7.09</b></span></div>
+    <div><span class="k">Method</span><span class="v">Base EMS-98 class shifted by
+      period, height, ground type and observed defects; read against damage
+      distributions at intensity VIII</span></div>
+    <div><span class="k">Limits</span><span class="v">Visible attributes only &mdash;
+      cannot see reinforcement, foundations or material strength. No substitute for
+      engineering assessment</span></div>
+  </div>
+
+  <div class="tb-foot">
+    <div><span class="k">Drawn by</span>
+      <span class="v name">Ravshanbek Karomatov</span></div>
+    <div><span class="k">Origin</span><span class="v">Gutenberg&ndash;Richter recurrence
+      analysis of the 1970&ndash;2026 instrumental catalogue, 300&nbsp;km Tashkent
+      zone</span></div>
+    <div><span class="k">Revision</span><span class="v"><b>3</b></span></div>
+    <div><span class="k">Sheet</span><span class="v"><b>1 of 1</b></span></div>
+  </div>
+
+</div></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+var TYPES=[
+ {v:"adobe",  t:"Adobe or pakhsa (rammed earth)",  b:0.15,s:"Adobe"},
+ {v:"urm",    t:"Unreinforced fired-brick masonry", b:1.05,s:"Brick masonry"},
+ {v:"confined",t:"Confined or reinforced masonry",  b:2.00,s:"Confined masonry"},
+ {v:"panel",  t:"Large-panel precast concrete",     b:2.35,s:"Precast panel"},
+ {v:"frame",  t:"RC frame with masonry infill",     b:2.20,s:"RC frame"},
+ {v:"mono",   t:"Monolithic reinforced concrete",   b:3.10,s:"Monolithic RC"},
+ {v:"steel",  t:"Steel frame",                      b:3.40,s:"Steel frame"}];
+var AGES=[
+ {v:"pre66", t:"Before 1966",d:-0.60,s:"pre-1966"},
+ {v:"66_80", t:"1966–1980",d:0.00,s:"1966–80"},
+ {v:"81_95", t:"1981–1995",d:0.20,s:"1981–95"},
+ {v:"post95",t:"After 1995",  d:0.45,s:"post-1995"}];
+var STOREYS=[
+ {v:"1_2",t:"1–2",d:0.00,s:"1–2"},
+ {v:"3_4",t:"3–4",d:-0.20,s:"3–4"},
+ {v:"5_9",t:"5–9",d:-0.45,s:"5–9"},
+ {v:"10p",t:"10 or more",d:-0.30,s:"10+"}];
+var SOILS=[
+ {v:"A",t:"A — rock",d:0.20},{v:"B",t:"B — dense sand or gravel",d:0.00},
+ {v:"C",t:"C — medium dense, deep",d:-0.25},
+ {v:"D",t:"D — loose to medium soil",d:-0.55},
+ {v:"E",t:"E — soft layer over rock",d:-0.65}];
+var FLAGS=[
+ {v:"soft", t:"Open or shop-fronted ground floor",  h:"Soft storey — the classic collapse mechanism",d:-0.55},
+ {v:"crack",t:"Visible cracking or past damage",    h:"Existing structural distress",d:-0.50},
+ {v:"added",t:"Storeys or heavy additions added later",h:"Load the frame was never designed for",d:-0.45},
+ {v:"irreg",t:"Strongly irregular plan or overhangs",h:"Twisting under shaking",d:-0.30},
+ {v:"maint",t:"Poor maintenance, damp or decay",    h:"Degraded materials and connections",d:-0.30},
+ {v:"pound",t:"Built hard against a taller neighbour",h:"Pounding between adjacent blocks",d:-0.25}];
+
+/* EMS-98 damage grades, at intensity VIII */
+var BANDS=[
+ {max:0.45,g:5,name:"Very heavy",prio:"Priority 1",state:"Destruction",
+  ds:"Total or near-total structural collapse."},
+ {max:1.45,g:4,name:"Heavy",prio:"Priority 2",state:"Very heavy damage",
+  ds:"Serious failure of walls. Partial structural failure of roofs and floors."},
+ {max:2.45,g:3,name:"Moderate",prio:"Priority 3",state:"Substantial to heavy",
+  ds:"Large and extensive cracks in most walls. Roof tiles detach. Chimneys fracture at the roof line."},
+ {max:3.45,g:2,name:"Slight",prio:"Priority 4",state:"Moderate damage",
+  ds:"Cracks in many walls. Fall of fairly large pieces of plaster. Partial collapse of chimneys."},
+ {max:99,  g:1,name:"Negligible",prio:"Monitor",state:"Negligible to slight",
+  ds:"Hair-line cracks in very few walls. Fall of small pieces of plaster only."}];
+var LETTER=["A","B","C","D","E"];
+
+function bandFor(i){for(var n=0;n<BANDS.length;n++){if(i<BANDS[n].max)return BANDS[n];}return BANDS[4];}
+function gv(g){return"var(--d"+g+")";}
+function find(a,v){for(var n=0;n<a.length;n++){if(a[n].v===v)return a[n];}return a[0];}
+function clamp(x){return Math.max(0,Math.min(4,x));}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){
+  return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function el(i){return document.getElementById(i);}
+
+function fill(id,arr,sel){
+  var h="";
+  for(var n=0;n<arr.length;n++)
+    h+='<option value="'+arr[n].v+'"'+(arr[n].v===sel?" selected":"")+'>'+esc(arr[n].t)+'</option>';
+  el(id).innerHTML=h;
+}
+fill("f-type",TYPES,"panel"); fill("f-age",AGES,"66_80");
+fill("f-st",STOREYS,"5_9");   fill("f-soil",SOILS,"C");
+(function(){
+  var h="";
+  for(var n=0;n<FLAGS.length;n++)
+    h+='<label class="tick"><input type="checkbox" id="fl-'+FLAGS[n].v+'"><span class="box"></span>'+
+       '<span class="tx">'+esc(FLAGS[n].t)+'<em>'+esc(FLAGS[n].h)+'</em></span>'+
+       '<span class="dv">'+FLAGS[n].d.toFixed(2)+'</span></label>';
+  el("f-flags").innerHTML=h;
+})();
+
+function read(){
+  var ty=find(TYPES,el("f-type").value),ag=find(AGES,el("f-age").value),
+      st=find(STOREYS,el("f-st").value),so=find(SOILS,el("f-soil").value),fl=[];
+  for(var n=0;n<FLAGS.length;n++){var b=el("fl-"+FLAGS[n].v);if(b&&b.checked)fl.push(FLAGS[n]);}
+  var raw=ty.b+ag.d+st.d+so.d;
+  for(var m=0;m<fl.length;m++)raw+=fl[m].d;
+  var idx=clamp(raw);
+  return{ty:ty,ag:ag,st:st,so:so,fl:fl,raw:raw,idx:idx,band:bandFor(idx),
+         ref:el("f-ref").value.trim()||"Unnamed",addr:el("f-addr").value.trim()};
+}
+function dd(d){return'<b'+(d<0?' class="neg"':'')+'>'+(d>0?"+":"")+d.toFixed(2)+'</b>';}
+
+function drawGrade(g){
+  el("c1").style.display=g>=1?"":"none";
+  el("c2").style.display=g>=2?"":"none";
+  el("c3").style.display=g>=3?"":"none";
+  el("d4").style.display=g===4?"":"none";
+  el("d5").style.display=g===5?"":"none";
+  el("g-shell").style.display=g===5?"none":"";
+}
+
+function render(){
+  var r=read(),b=r.band;
+  el("r-gr").textContent="D"+b.g;
+  el("r-gr").style.color=gv(b.g);
+  el("r-nm").textContent=b.name+" damage";
+  el("r-pr").textContent=b.prio;
+  el("r-pr").style.color=gv(b.g);
+  el("r-ds").innerHTML="<b>EMS-98 grade "+b.g+" &mdash; "+esc(b.state)+".</b> "+esc(b.ds);
+  el("dwg-cap").textContent="Expected state · D"+b.g;
+  drawGrade(b.g);
+
+  var li=Math.max(0,Math.min(4,Math.round(r.idx)));
+  el("r-cls").textContent="Class "+LETTER[li]+" · index "+r.idx.toFixed(2);
+  el("r-ptr").style.transform="translateX("+(4+r.idx/4*312)+"px)";
+
+  var h='<div class="dl"><span>'+esc(r.ty.t)+'</span><b>'+r.ty.b.toFixed(2)+'</b></div>'+
+        '<div class="dl"><span>Built '+esc(r.ag.s)+'</span>'+dd(r.ag.d)+'</div>'+
+        '<div class="dl"><span>'+esc(r.st.s)+' storeys</span>'+dd(r.st.d)+'</div>'+
+        '<div class="dl"><span>Ground type '+esc(r.so.v)+'</span>'+dd(r.so.d)+'</div>';
+  for(var n=0;n<r.fl.length;n++)
+    h+='<div class="dl"><span>'+esc(r.fl[n].t)+'</span>'+dd(r.fl[n].d)+'</div>';
+  if(Math.abs(r.raw-r.idx)>0.005)
+    h+='<div class="dl"><span>'+(r.raw<0?"Floor at class A":"Ceiling at class E")+
+       '</span>'+dd(r.idx-r.raw)+'</div>';
+  h+='<div class="dl sum"><span>Effective class index</span><b>'+r.idx.toFixed(2)+'</b></div>';
+  el("r-lines").innerHTML=h;
+}
+
+/* ---------- schedule ---------- */
+var db=null,rows=[],local=[];
+function idxOf(o){
+  var i=find(TYPES,o.type).b+find(AGES,o.age).d+find(STOREYS,o.st).d+find(SOILS,o.soil).d;
+  var f=o.flags||[];
+  for(var n=0;n<f.length;n++)i+=find(FLAGS,f[n]).d;
+  return clamp(i);
+}
+var EXAMPLES=[
+ {ref:"TSH-0118",addr:"Old city, Sebzar",              type:"adobe",age:"pre66", st:"1_2",soil:"D",residents:6},
+ {ref:"TSH-0233",addr:"Yakkasaroy, Shota Rustaveli",   type:"urm",  age:"81_95",st:"3_4",soil:"B",residents:48},
+ {ref:"TSH-0287",addr:"Mirzo Ulugbek, Buyuk Ipak Yuli",type:"frame",age:"66_80",st:"5_9",soil:"C",residents:134},
+ {ref:"TSH-0390",addr:"Sergeli, block 6",              type:"mono", age:"post95",st:"10p",soil:"D",residents:228}];
+for(var _e=0;_e<EXAMPLES.length;_e++)EXAMPLES[_e].idx=idxOf(EXAMPLES[_e]);
+
+function renderFolio(){
+  /* corpus() normalises every record through the same model, so stored and
+     freshly-computed rows cannot disagree. */
+  var C=corpus(),live=rows.length?rows:local,ex=!live.length;
+  el("p-tally").textContent=ex?"no records \u00b7 showing examples"
+    :(C.length+(C.length===1?" record":" records"));
+
+  var c={1:0,2:0,3:0,4:0,5:0};
+  for(var n=0;n<C.length;n++)c[C[n].g]++;
+  var sh="";
+  for(var g=5;g>=1;g--)
+    if(c[g])sh+='<i style="flex-grow:'+c[g]+';background:'+gv(g)+'">D'+g+' \u00d7'+c[g]+'</i>';
+  el("p-strip").innerHTML=sh||'<i class="none"></i>';
+
+  var h="";
+  for(var m=0;m<C.length;m++){
+    var r=C[m],b=r.band,li=Math.max(0,Math.min(4,Math.round(r.idx)));
+    h+='<tr'+(ex?' class="exr"':'')+'>'+
+      '<td><span class="rf">'+esc(r.ref)+'</span>'+(ex?'<span class="extag">ex</span>':'')+
+        '<div class="sb">'+esc(r.addr||"\u2014")+'</div></td>'+
+      '<td>'+esc(find(TYPES,r.type).s)+'</td>'+
+      '<td class="num">'+esc(find(AGES,r.age).s)+'</td>'+
+      '<td class="num">'+esc(r.soil)+'</td>'+
+      '<td class="num">'+LETTER[li]+' \u00b7 '+r.idx.toFixed(2)+'</td>'+
+      '<td><span class="gchip"><i style="background:'+gv(b.g)+'"></i>D'+b.g+'</span></td>'+
+      '<td>'+esc(b.state)+'</td>'+
+      '<td class="num">'+b.prio.replace("Priority ","P").replace("Monitor","\u2014")+'</td>'+
+      '<td>'+(ex?"":'<button class="rm" data-id="'+esc(r.id||"")+'" data-n="'+m+
+        '" aria-label="Remove '+esc(r.ref)+'">&times;</button>')+'</td></tr>';
+  }
+  el("p-rows").innerHTML=h;
+  paintPortfolio();
+}
+
+function toast(m){
+  var t=el("toast");t.textContent=m;t.classList.add("on");
+  clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("on");},2100);
+}
+
+el("b-save").addEventListener("click",function(){
+  var r=read(),fl=[];
+  for(var n=0;n<r.fl.length;n++)fl.push(r.fl[n].v);
+  var rec={ref:r.ref,addr:r.addr,type:r.ty.v,age:r.ag.v,st:r.st.v,soil:r.so.v,flags:fl,
+           district:el("f-dist").value.trim()||distOf({addr:r.addr}),
+           residents:Math.max(0,parseInt(el("f-res").value,10)||0),
+           idx:Math.round(r.idx*100)/100,grade:r.band.g,createdAt:new Date().toISOString()};
+  rec.id="r"+Date.now().toString(36);
+  rows.unshift(rec);lsSave(rows);renderFolio();
+  toast(lsOK()?"Added to schedule":"Added — not saved, storage unavailable");
+});
+el("b-reset").addEventListener("click",function(){
+  el("f-ref").value="";el("f-addr").value="";
+  el("f-res").value="";el("f-dist").value="";
+  for(var n=0;n<FLAGS.length;n++){var b=el("fl-"+FLAGS[n].v);if(b)b.checked=false;}
+  render();
+});
+el("p-rows").addEventListener("click",function(e){
+  var b=e.target.closest(".rm");if(!b)return;
+  var id=b.getAttribute("data-id");
+  for(var n=0;n<rows.length;n++){
+    if(rows[n].id===id){rows.splice(n,1);lsSave(rows);renderFolio();return;}
+  }
+  rows.splice(parseInt(b.getAttribute("data-n"),10),1);lsSave(rows);renderFolio();
+});
+document.addEventListener("input",function(e){if(e.target.closest(".col"))render();});
+document.addEventListener("change",function(e){if(e.target.closest(".col"))render();});
+
+
+
+/* ---------- browser storage ---------- */
+var LS_KEY="zilzila.screenings.v1";
+var SEED=[{"ref":"TSH-0111","addr":"Yunusobod, 62-uy","district":"Yunusobod","type":"panel","age":"66_80","st":"10p","soil":"C","flags":["maint","added"],"residents":284,"createdAt":"2026-06-05T09:40:00Z","demo":true,"id":"demo-001"},{"ref":"TSH-0101","addr":"Shayxontohur, 12-uy","district":"Shayxontohur","type":"urm","age":"pre66","st":"3_4","soil":"D","flags":["crack"],"residents":27,"createdAt":"2026-06-08T09:40:00Z","demo":true,"id":"demo-002"},{"ref":"TSH-0131","addr":"Sergeli, mahalla 13","district":"Sergeli","type":"mono","age":"post95","st":"5_9","soil":"D","flags":[],"residents":81,"createdAt":"2026-06-13T08:20:00Z","demo":true,"id":"demo-003"},{"ref":"TSH-0109","addr":"Chilanzar, 51-uy","district":"Chilanzar","type":"panel","age":"81_95","st":"3_4","soil":"C","flags":["pound","maint"],"residents":27,"createdAt":"2026-06-16T14:05:00Z","demo":true,"id":"demo-004"},{"ref":"TSH-0102","addr":"Shayxontohur, mahalla 5","district":"Shayxontohur","type":"urm","age":"pre66","st":"1_2","soil":"D","flags":["crack"],"residents":3,"createdAt":"2026-06-19T12:40:00Z","demo":true,"id":"demo-005"},{"ref":"TSH-0133","addr":"Sergeli, mahalla 15","district":"Sergeli","type":"mono","age":"post95","st":"10p","soil":"D","flags":[],"residents":252,"createdAt":"2026-06-21T08:40:00Z","demo":true,"id":"demo-006"},{"ref":"TSH-0112","addr":"Yunusobod, mahalla 10","district":"Yunusobod","type":"frame","age":"66_80","st":"10p","soil":"C","flags":["crack"],"residents":299,"createdAt":"2026-06-23T12:40:00Z","demo":true,"id":"demo-007"},{"ref":"TSH-0139","addr":"Bektemir, mahalla 7","district":"Bektemir","type":"confined","age":"post95","st":"1_2","soil":"C","flags":[],"residents":5,"createdAt":"2026-06-24T12:20:00Z","demo":true,"id":"demo-008"},{"ref":"TSH-0105","addr":"Chilanzar, 64-uy","district":"Chilanzar","type":"panel","age":"81_95","st":"5_9","soil":"C","flags":["maint"],"residents":113,"createdAt":"2026-06-27T09:20:00Z","demo":true,"id":"demo-009"},{"ref":"TSH-0134","addr":"Sergeli, 9-uy","district":"Sergeli","type":"frame","age":"post95","st":"5_9","soil":"D","flags":[],"residents":138,"createdAt":"2026-06-28T12:05:00Z","demo":true,"id":"demo-010"},{"ref":"TSH-0118","addr":"Yakkasaroy, mahalla 5","district":"Yakkasaroy","type":"confined","age":"81_95","st":"3_4","soil":"B","flags":["pound","maint"],"residents":57,"createdAt":"2026-06-28T15:05:00Z","demo":true,"id":"demo-011"},{"ref":"TSH-0132","addr":"Sergeli, mahalla 10","district":"Sergeli","type":"mono","age":"post95","st":"10p","soil":"D","flags":["pound"],"residents":243,"createdAt":"2026-07-02T16:40:00Z","demo":true,"id":"demo-012"},{"ref":"TSH-0125","addr":"Olmazor, block 42","district":"Olmazor","type":"confined","age":"81_95","st":"5_9","soil":"D","flags":["crack"],"residents":104,"createdAt":"2026-07-03T12:05:00Z","demo":true,"id":"demo-013"},{"ref":"TSH-0137","addr":"Yashnobod, block 30","district":"Yashnobod","type":"urm","age":"81_95","st":"3_4","soil":"B","flags":[],"residents":28,"createdAt":"2026-07-03T17:05:00Z","demo":true,"id":"demo-014"},{"ref":"TSH-0119","addr":"Yakkasaroy, block 32","district":"Yakkasaroy","type":"urm","age":"pre66","st":"3_4","soil":"B","flags":["crack","soft"],"residents":57,"createdAt":"2026-07-07T12:05:00Z","demo":true,"id":"demo-015"},{"ref":"TSH-0126","addr":"Olmazor, block 9","district":"Olmazor","type":"confined","age":"66_80","st":"3_4","soil":"D","flags":["added","maint"],"residents":26,"createdAt":"2026-07-07T12:40:00Z","demo":true,"id":"demo-016"},{"ref":"TSH-0114","addr":"Mirzo Ulugbek, 14-uy","district":"Mirzo Ulugbek","type":"mono","age":"post95","st":"10p","soil":"C","flags":[],"residents":180,"createdAt":"2026-07-11T11:20:00Z","demo":true,"id":"demo-017"},{"ref":"TSH-0135","addr":"Yashnobod, block 4","district":"Yashnobod","type":"urm","age":"81_95","st":"5_9","soil":"D","flags":["irreg"],"residents":157,"createdAt":"2026-07-11T12:40:00Z","demo":true,"id":"demo-018"},{"ref":"TSH-0128","addr":"Uchtepa, mahalla 7","district":"Uchtepa","type":"frame","age":"66_80","st":"3_4","soil":"D","flags":["irreg"],"residents":43,"createdAt":"2026-07-13T13:05:00Z","demo":true,"id":"demo-019"},{"ref":"TSH-0127","addr":"Uchtepa, mahalla 17","district":"Uchtepa","type":"frame","age":"66_80","st":"3_4","soil":"C","flags":[],"residents":25,"createdAt":"2026-07-17T15:05:00Z","demo":true,"id":"demo-020"},{"ref":"TSH-0124","addr":"Olmazor, 87-uy","district":"Olmazor","type":"panel","age":"66_80","st":"5_9","soil":"D","flags":[],"residents":104,"createdAt":"2026-07-18T16:40:00Z","demo":true,"id":"demo-021"},{"ref":"TSH-0106","addr":"Chilanzar, 3-uy","district":"Chilanzar","type":"panel","age":"81_95","st":"5_9","soil":"C","flags":["pound"],"residents":106,"createdAt":"2026-07-20T09:20:00Z","demo":true,"id":"demo-022"},{"ref":"TSH-0129","addr":"Uchtepa, mahalla 10","district":"Uchtepa","type":"panel","age":"66_80","st":"5_9","soil":"C","flags":[],"residents":155,"createdAt":"2026-07-23T12:05:00Z","demo":true,"id":"demo-023"},{"ref":"TSH-0120","addr":"Yakkasaroy, 66-uy","district":"Yakkasaroy","type":"urm","age":"81_95","st":"3_4","soil":"B","flags":[],"residents":56,"createdAt":"2026-07-23T16:20:00Z","demo":true,"id":"demo-024"},{"ref":"TSH-0117","addr":"Mirzo Ulugbek, 33-uy","district":"Mirzo Ulugbek","type":"frame","age":"81_95","st":"5_9","soil":"C","flags":["crack"],"residents":175,"createdAt":"2026-07-25T17:20:00Z","demo":true,"id":"demo-025"},{"ref":"TSH-0107","addr":"Chilanzar, 52-uy","district":"Chilanzar","type":"panel","age":"66_80","st":"3_4","soil":"C","flags":[],"residents":55,"createdAt":"2026-07-27T14:40:00Z","demo":true,"id":"demo-026"},{"ref":"TSH-0115","addr":"Mirzo Ulugbek, mahalla 14","district":"Mirzo Ulugbek","type":"panel","age":"81_95","st":"10p","soil":"C","flags":["soft"],"residents":211,"createdAt":"2026-08-03T14:20:00Z","demo":true,"id":"demo-027"},{"ref":"TSH-0116","addr":"Mirzo Ulugbek, mahalla 16","district":"Mirzo Ulugbek","type":"mono","age":"81_95","st":"5_9","soil":"C","flags":[],"residents":173,"createdAt":"2026-08-05T16:40:00Z","demo":true,"id":"demo-028"},{"ref":"TSH-0130","addr":"Sergeli, block 17","district":"Sergeli","type":"mono","age":"post95","st":"10p","soil":"C","flags":[],"residents":242,"createdAt":"2026-08-06T08:20:00Z","demo":true,"id":"demo-029"},{"ref":"TSH-0108","addr":"Chilanzar, block 2","district":"Chilanzar","type":"panel","age":"81_95","st":"3_4","soil":"C","flags":["crack","soft"],"residents":33,"createdAt":"2026-08-10T08:05:00Z","demo":true,"id":"demo-030"},{"ref":"TSH-0103","addr":"Shayxontohur, 64-uy","district":"Shayxontohur","type":"urm","age":"pre66","st":"1_2","soil":"D","flags":["crack"],"residents":3,"createdAt":"2026-08-15T17:20:00Z","demo":true,"id":"demo-031"},{"ref":"TSH-0123","addr":"Mirobod, mahalla 11","district":"Mirobod","type":"frame","age":"pre66","st":"5_9","soil":"C","flags":["soft"],"residents":128,"createdAt":"2026-08-17T09:05:00Z","demo":true,"id":"demo-032"},{"ref":"TSH-0110","addr":"Yunusobod, block 38","district":"Yunusobod","type":"panel","age":"81_95","st":"5_9","soil":"C","flags":[],"residents":83,"createdAt":"2026-08-20T08:05:00Z","demo":true,"id":"demo-033"},{"ref":"TSH-0140","addr":"Bektemir, mahalla 2","district":"Bektemir","type":"steel","age":"81_95","st":"1_2","soil":"C","flags":[],"residents":6,"createdAt":"2026-08-21T10:05:00Z","demo":true,"id":"demo-034"},{"ref":"TSH-0121","addr":"Mirobod, mahalla 7","district":"Mirobod","type":"confined","age":"pre66","st":"5_9","soil":"B","flags":[],"residents":79,"createdAt":"2026-08-26T09:05:00Z","demo":true,"id":"demo-035"},{"ref":"TSH-0104","addr":"Shayxontohur, block 20","district":"Shayxontohur","type":"urm","age":"pre66","st":"1_2","soil":"D","flags":["crack"],"residents":6,"createdAt":"2026-09-06T13:05:00Z","demo":true,"id":"demo-036"},{"ref":"TSH-0113","addr":"Yunusobod, mahalla 7","district":"Yunusobod","type":"frame","age":"81_95","st":"10p","soil":"C","flags":["maint"],"residents":221,"createdAt":"2026-09-12T08:05:00Z","demo":true,"id":"demo-037"},{"ref":"TSH-0138","addr":"Bektemir, 21-uy","district":"Bektemir","type":"confined","age":"post95","st":"1_2","soil":"C","flags":["pound","added"],"residents":4,"createdAt":"2026-09-13T12:40:00Z","demo":true,"id":"demo-038"},{"ref":"TSH-0136","addr":"Yashnobod, 38-uy","district":"Yashnobod","type":"urm","age":"66_80","st":"5_9","soil":"B","flags":[],"residents":158,"createdAt":"2026-09-15T15:05:00Z","demo":true,"id":"demo-039"},{"ref":"TSH-0122","addr":"Mirobod, block 12","district":"Mirobod","type":"confined","age":"81_95","st":"5_9","soil":"C","flags":["irreg","crack"],"residents":120,"createdAt":"2026-09-17T14:20:00Z","demo":true,"id":"demo-040"}];
+function lsOK(){
+  try{localStorage.setItem("__z","1");localStorage.removeItem("__z");return true;}
+  catch(e){return false;}
+}
+function lsLoad(){
+  if(!lsOK())return SEED.slice();
+  try{
+    var a=JSON.parse(localStorage.getItem(LS_KEY));
+    if(a&&a.length)return a;
+  }catch(e){}
+  lsSave(SEED);
+  return SEED.slice();
+}
+function lsSave(a){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(a));}catch(e){}
+}
+
+/* ================= PORTFOLIO ================= */
+var STOCK_TOTAL=209023;   /* Ismailov et al. 2026: 197,740 single + 11,283 multi */
+function distOf(r){
+  return r.district||String(r.addr||"").split(",")[0].trim()||"Unassigned";
+}
+function corpus(){
+  var live=rows.length?rows:local,src=live.length?live:EXAMPLES,out=[];
+  for(var n=0;n<src.length;n++){
+    var r=src[n],o={};
+    for(var k in r)if(Object.prototype.hasOwnProperty.call(r,k))o[k]=r[k];
+    o.idx=idxOf(r);o.band=bandFor(o.idx);o.g=o.band.g;
+    o.district=distOf(r);o.residents=Number(r.residents)||0;
+    out.push(o);
+  }
+  return out;
+}
+function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,"\u2009");}
+
+function paintPortfolio(){
+  var C=corpus(),N=C.length;
+  var byG={1:0,2:0,3:0,4:0,5:0},resG={1:0,2:0,3:0,4:0,5:0},pre=0,dem=0;
+  var resTot=0,resHi=0,p1=0;
+  for(var n=0;n<N;n++){
+    var r=C[n];byG[r.g]++;resG[r.g]+=r.residents;resTot+=r.residents;
+    if(r.age==="pre66")pre++;
+    if(r.demo)dem++;
+    if(r.g>=4)resHi+=r.residents;
+    if(r.g===5)p1++;
+  }
+  el("ps-sub").textContent=N+" records \u00b7 "+fmt(resTot)+" residents";
+  el("n2-h").textContent=dem?"Demonstration dataset.":"Example records.";
+  el("n2-b").textContent=dem
+    ? dem+" seeded survey records, generated to show the portfolio view in use. "+
+      "Buildings you add from the Survey view appear alongside them and are counted "+
+      "in every figure below."
+    : "Shown until the first survey is saved. Records you add from the Survey view "+
+      "replace them and are counted in every figure below.";
+
+  var K=[
+    ["Buildings screened",fmt(N),"","across "+Object.keys(C.reduce(function(a,r){
+        a[r.district]=1;return a;},{})).length+" districts"],
+    ["Priority 1",fmt(p1),"","grade D5 \u2014 immediate assessment"],
+    ["Residents exposed",fmt(resHi),"","in D4 and D5 buildings"],
+    ["Pre-1966 stock",(N?Math.round(100*pre/N):0),"%","built with no seismic provisions"],
+    ["Stock covered",(100*N/STOCK_TOTAL).toFixed(3),"%","of "+fmt(STOCK_TOTAL)+" dwellings"]];
+  var h="";
+  for(var k=0;k<K.length;k++)
+    h+='<div class="kpi"><span class="k">'+K[k][0]+'</span>'+
+       '<div class="n">'+K[k][1]+(K[k][2]?'<small>'+K[k][2]+'</small>':'')+'</div>'+
+       '<span class="s">'+K[k][3]+'</span></div>';
+  el("kpis").innerHTML=h;
+
+  /* risk profile */
+  var ph="",lh="";
+  for(var g=5;g>=1;g--){
+    if(byG[g])ph+='<i style="flex-grow:'+byG[g]+';background:'+gv(g)+'">'+byG[g]+'</i>';
+    lh+='<span><i style="background:'+gv(g)+'"></i>D'+g+' '+BANDS[5-g].state+'</span>';
+  }
+  el("prof").innerHTML=ph;el("prof-key").innerHTML=lh;
+
+  var rh="";
+  for(var g2=5;g2>=1;g2--)
+    rh+='<div class="dl"><span>D'+g2+' \u00b7 '+BANDS[5-g2].state+'</span><b>'+
+        fmt(resG[g2])+'</b></div>';
+  rh+='<div class="dl sum"><span>Total residents surveyed</span><b>'+fmt(resTot)+'</b></div>';
+  el("res-lines").innerHTML=rh;
+
+  /* exposure by district */
+  var D={};
+  for(var m=0;m<N;m++){
+    var q=C[m],d=D[q.district]||(D[q.district]={n:0,hi:0,tot:0,g:{1:0,2:0,3:0,4:0,5:0}});
+    d.n++;d.tot+=q.residents;d.g[q.g]+=q.residents;if(q.g>=4)d.hi+=q.residents;
+  }
+  var names=Object.keys(D).sort(function(a,b){return D[b].hi-D[a].hi||D[b].tot-D[a].tot;});
+  var peak=1;
+  for(var i=0;i<names.length;i++)peak=Math.max(peak,D[names[i]].tot);
+  var dh="";
+  for(var j=0;j<names.length;j++){
+    var d2=D[names[j]],bar="";
+    for(var g3=5;g3>=1;g3--)
+      if(d2.g[g3])bar+='<i style="flex-grow:'+d2.g[g3]+';background:'+gv(g3)+'"></i>';
+    dh+='<span class="dn">'+esc(names[j])+'</span>'+
+        '<div class="db" style="width:'+(100*d2.tot/peak).toFixed(1)+'%">'+bar+'</div>'+
+        '<span class="dv">'+fmt(d2.hi)+' / '+fmt(d2.tot)+'</span>';
+  }
+  el("rank").innerHTML=dh;
+
+  /* stock matrix: type x period */
+  var cells={},seen={};
+  for(var t=0;t<N;t++){
+    var u=C[t],key=u.type+"|"+u.age;
+    (cells[key]||(cells[key]={n:0,s:0}));cells[key].n++;cells[key].s+=u.g;
+    seen[u.type]=1;
+  }
+  var mh='<thead><tr><th>Structural type</th>';
+  for(var a=0;a<AGES.length;a++)mh+='<th>'+esc(AGES[a].s)+'</th>';
+  mh+='</tr></thead><tbody>';
+  for(var y=0;y<TYPES.length;y++){
+    if(!seen[TYPES[y].v])continue;
+    mh+='<tr><td class="rl">'+esc(TYPES[y].s)+'</td>';
+    for(var x=0;x<AGES.length;x++){
+      var c=cells[TYPES[y].v+"|"+AGES[x].v];
+      if(c){
+        var mg=Math.round(c.s/c.n);
+        mh+='<td><div class="cell" style="background:rgba(var(--d'+mg+'r),'+
+            (0.14+0.13*mg).toFixed(2)+')" title="mean grade D'+mg+'">'+c.n+'</div></td>';
+      }else mh+='<td><div class="cell zero">\u00b7</div></td>';
+    }
+    mh+='</tr>';
+  }
+  el("mx").innerHTML=mh+'</tbody>';
+
+  /* retrofit queue */
+  var Q=C.slice().sort(function(a,b){
+    return a.idx-b.idx||b.residents-a.residents;}).slice(0,12);
+  var qh="";
+  for(var z=0;z<Q.length;z++){
+    var w=Q[z],li=Math.max(0,Math.min(4,Math.round(w.idx)));
+    qh+='<tr><td class="num">'+(z+1)+'</td>'+
+      '<td><span class="rf">'+esc(w.ref)+'</span></td>'+
+      '<td>'+esc(w.district)+'</td>'+
+      '<td>'+esc(find(TYPES,w.type).s)+'</td>'+
+      '<td class="num">'+esc(find(AGES,w.age).s)+'</td>'+
+      '<td class="num">'+(w.residents||"\u2014")+'</td>'+
+      '<td class="num">'+LETTER[li]+' \u00b7 '+w.idx.toFixed(2)+'</td>'+
+      '<td><span class="gchip"><i style="background:'+gv(w.g)+'"></i>D'+w.g+'</span></td>'+
+      '<td class="num">'+w.band.prio.replace("Priority ","P").replace("Monitor","\u2014")+
+      '</td></tr>';
+  }
+  el("q-rows").innerHTML=qh;
+  el("q-sub").textContent="worst "+Q.length+" of "+N;
+}
+
+function setView(v){
+  el("view-port").hidden=v!=="port";
+  el("view-surv").hidden=v!=="surv";
+  el("v-port").setAttribute("aria-pressed",String(v==="port"));
+  el("v-surv").setAttribute("aria-pressed",String(v==="surv"));
+}
+el("v-port").addEventListener("click",function(){setView("port");});
+el("v-surv").addEventListener("click",function(){setView("surv");});
+
+render();renderFolio();paintPortfolio();
+
+(function(){
+  var s=el("r-stat");
+  rows=lsLoad();
+  s.textContent=lsOK()?"Saved in this browser":"Storage unavailable";
+  renderFolio();
+})();
+})();
+</script>
+</body>
+</html>
